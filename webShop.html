@@ -9,6 +9,10 @@
   <h1>Products</h1>
   <ul id="product-list"></ul>
 
+  <h2>Shopping Cart</h2>
+  <ul id="cart-list"></ul>
+  <p>Total Price: <span id="total-price">0 DKK</span></p>
+
   <script>
     // Fetching data from JSON file
     fetch('items.json')
@@ -16,11 +20,74 @@
       .then(data => {
         // Manipulate data
         const productList = document.getElementById('product-list');
+        const cartList = document.getElementById('cart-list');
+        const totalPriceElement = document.getElementById('total-price');
+        let totalPrice = 0;
+        let cartItemsMap = new Map();
+
         data.forEach(product => {
           const li = document.createElement('li');
           li.textContent = `${product.name} - ${product.price} ${product.currency}`;
+
+          // Add button to add product to cart
+          const addButton = document.createElement('button');
+          addButton.textContent = 'Add to Cart';
+          addButton.onclick = function() {
+            addToCart(product.id);
+            updateTotalPrice();
+          };
+          li.appendChild(addButton);
+
           productList.appendChild(li);
         });
+
+        function addToCart(productId) {
+          const product = data.find(item => item.id === productId);
+          const cartItem = cartItemsMap.get(productId);
+
+          if (cartItem) {
+            cartItem.quantity++;
+            cartItem.element.querySelector('input').value = cartItem.quantity;
+          } else {
+            const newCartItem = document.createElement('li');
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'number';
+            quantityInput.value = 1;
+            quantityInput.min = 1;
+            quantityInput.addEventListener('input', () => updateQuantity(productId, quantityInput.value));
+            newCartItem.appendChild(quantityInput);
+            newCartItem.appendChild(document.createTextNode(` ${product.name} - ${product.price} ${product.currency}`));
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remove';
+            removeButton.onclick = () => removeFromCart(productId);
+            newCartItem.appendChild(removeButton);
+            cartList.appendChild(newCartItem);
+            cartItemsMap.set(productId, {element: newCartItem, quantity: 1});
+          }
+        }
+
+        function updateQuantity(productId, quantity) {
+          const cartItem = cartItemsMap.get(productId);
+          cartItem.quantity = parseInt(quantity);
+          updateTotalPrice();
+        }
+
+        function removeFromCart(productId) {
+          const cartItem = cartItemsMap.get(productId);
+          cartList.removeChild(cartItem.element);
+          cartItemsMap.delete(productId);
+          updateTotalPrice();
+        }
+
+        function updateTotalPrice() {
+          totalPrice = 0;
+          cartItemsMap.forEach(cartItem => {
+            const product = data.find(item => item.id === cartItem.element.textContent.split(' - ')[0]);
+            const price = product.price * cartItem.quantity;
+            totalPrice += price;
+          });
+          totalPriceElement.textContent = `${totalPrice.toFixed(2)} DKK`;
+        }
       })
       .catch(error => console.error('Error fetching data:', error));
   </script>
