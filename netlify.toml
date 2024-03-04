@@ -5,5 +5,5 @@ base = "/"
 
 [[redirects]]
   from = "/*"
-  to = "/webS.html"
+  to = "/webShop.html"
   status = 200
