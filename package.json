@@ -4,7 +4,7 @@
   "description": "Webshop with different productsd",
   "main": "webShop.html",
   "scripts": {
-    "test": "jest"
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,8 @@
     "Items"
   ],
   "author": "Ali M, Amaan, Haashir, Sofian, Ali HK",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "vitest": "^1.3.1"
+  }
 }
