@@ -1,0 +1,20 @@
+{
+  "name": "frontendweb",
+  "version": "1.0.0",
+  "description": "Webshop with different productsd",
+  "main": "webShop.html",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "FrontEndWeb"
+  },
+  "keywords": [
+    "Webshop",
+    "Products",
+    "Items"
+  ],
+  "author": "Ali M, Amaan, Haashir, Sofian, Ali HK",
+  "license": "ISC"
+}

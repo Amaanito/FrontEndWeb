@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,39 +14,10 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <script type="text/babel">
-   function ProductList({ products, addToCart, upsellNotification }) {
-  return (
-    <ul>
-      {products.map(product => (
-        <li key={product.id}>
-          {product.name} - {product.price} DKK
-          <button onClick={() => addToCart(product.id)}>Add to Cart</button>
-          {product.upsellProductId && (
-            <button onClick={() => upsellNotification(product.upsellProductId)}>se dyre alternativ</button> 
-          )}
-        </li>
-      ))}
-    </ul>
-  );
-}
-    function CartItem({ item, removeFromCart }) {
-      return (
-        <li>
-          {item.name} - {item.price} DKK - Quantity: {item.quantity}
-          <button onClick={() => removeFromCart(item.id)}>Remove</button>
-        </li>
-      );
-    }
-
-    function ShoppingCart({ cart, removeFromCart }) {
-      return (
-        <ul>
-          {cart.map(item => (
-            <CartItem key={item.id} item={item} removeFromCart={removeFromCart} />
-          ))}
-        </ul>
-      );
-    }
+    import React from 'react';
+    import ProductList from './ProductList';
+    import ShoppingCart from './ShoppingCart';
+  
     function App() {
       const [products, setProducts] = React.useState([]);
       const [cart, setCart] = React.useState([]);
@@ -86,39 +58,6 @@
 
         setCart(newCart);
         setTotalPrice(calculateTotalPrice(newCart));
-      };
-
-      const removeFromCart = (productId) => {
-        const newCart = cart.reduce((acc, item) => {
-          if (item.id === productId) {
-            if (item.quantity > 1) {
-              acc.push({ ...item, quantity: item.quantity - 1 });
-            }
-          } else {
-            acc.push(item);
-          }
-          return acc;
-        }, []);
-
-        setCart(newCart);
-        setTotalPrice(calculateTotalPrice(newCart));
-      };
-
-      const calculateTotalPrice = (cart) => {
-        let totalPrice = 0;
-        cart.forEach(item => {
-          let itemTotal = item.price * item.quantity;
-          if (item.quantity >= item.rebateQuantity && item.rebateQuantity > 0) {
-            itemTotal *= (1 - item.rebatePercent / 100);
-          }
-          totalPrice += itemTotal;
-        });
-
-        if (totalPrice > 300) {
-          totalPrice *= 0.9; // Apply 10% discount for orders over 300 DKK
-        }
-
-        return totalPrice;
       };
 
       const upsellNotification = (upsellProductId) => {
