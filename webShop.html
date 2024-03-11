@@ -28,20 +28,40 @@
     </ul>
   );
 }
-    function CartItem({ item, removeFromCart }) {
-      return (
-        <li>
-          {item.name} - {item.price} DKK - Quantity: {item.quantity}
-          <button onClick={() => removeFromCart(item.id)}>Remove</button>
-        </li>
-      );
-    }
+/**
+@author Haashir Khan
+*/
+function CartItem({ item, removeFromCart, updateQuantity }) {
+  return (
+    <li>
+      {item.name} - {item.price} DKK - Quantity: 
+      <select value={item.quantity} onChange={(e) => updateQuantity(item.id, parseInt(e.target.value, 10))}>
+        {/* Dropdown med antal tilføjelser */}
+        {[...Array(10).keys()].map(i => 
+          <option key={i + 1} value={i + 1}>{i + 1}</option>
+        )}
+      </select>
+      <button onClick={() => removeFromCart(item.id)}>Remove</button>
+      {/* Tilføjelse af prisoplysning pr. enhed */}
+      <p>Price per item: {item.price} DKK</p>
+      {/* Viser totalprisen for alle enheder af denne vare */}
+      <p>Total price: {item.price * item.quantity} DKK</p>
+    </li>
+  );
+}
 
-    function ShoppingCart({ cart, removeFromCart }) {
-      return (
-        <ul>
-          {cart.map(item => (
-            <CartItem key={item.id} item={item} removeFromCart={removeFromCart} />
+
+/**
+@author Haashir Khan
+*/
+function ShoppingCart({ cart, removeFromCart }) {
+ if (cart.length=== 0){
+  return <p> Din Indskøbsvogn er tom</p>
+      }
+  return (
+    <ul>
+    {cart.map(item => (
+    <CartItem key={item.id} item={item} removeFromCart={removeFromCart} />
           ))}
         </ul>
       );
